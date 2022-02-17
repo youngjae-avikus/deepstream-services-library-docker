@@ -7,6 +7,7 @@ xhost +
 sudo docker run \
     -it \
     --net=host \
+    --rm \
     --runtime nvidia \
     -e DISPLAY=$DISPLAY \
     -v /tmp/argus_socket:/tmp/argus_socket \
