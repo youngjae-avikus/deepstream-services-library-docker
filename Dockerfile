@@ -1,4 +1,5 @@
-ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
+#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
+ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-iot
 FROM ${BASE_IMAGE}
 
 ARG ROOT_NAME=/opt/prominenceai
@@ -30,6 +31,7 @@ RUN apt install \
 	libgstrtspserver-1.0-0 \
 	libjansson4=2.11-1
 
+RUN apt-get update
 RUN apt-get install libgstrtspserver-1.0-dev gstreamer1.0-rtsp
 RUN apt-get install -y libgeos-dev 
 RUN apt-get update
@@ -72,5 +74,7 @@ RUN mkdir ${ROOT_NAME}
 WORKDIR ${ROOT_NAME}
 
 RUN git clone https://github.com/prominenceai/deepstream-services-library.git
-RUN cd deepstream-services-library
-RUN make -j 4
+WORKDIR ${ROOT_NAME}/deepstream-services-library
+RUN ls
+#RUN make -j 4
+#RUN make lib
