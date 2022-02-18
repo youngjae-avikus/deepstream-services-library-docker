@@ -1,5 +1,5 @@
-#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
-ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-iot
+ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
+#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-iot
 FROM ${BASE_IMAGE}
 
 ARG ROOT_NAME=/opt/prominenceai
