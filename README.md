@@ -3,7 +3,7 @@ This repo contains a Dockerfile and utility scripts for the [Deepstream Services
 
 Import notes:
 * Jetson only - dGPU files are still to be developed.
-* Base image: [`docker pull nvcr.io/nvidia/deepstream-l4t:6.0-samples`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
+* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
 * Remaining issues require two additional build steps -- in interactive mode -- to build the `libdsl.so` once the container is running.
 * The `deepstream-services-library` repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`
 * **CAUTION: this repo is in the early stages of development -- please report issues!**
@@ -16,6 +16,16 @@ Import notes:
 
 *... and many thanks to [@gigwegbe](https://github.com/gigwegbe) for creating the above files!*
 
+## Contents
+* [Install system dependencies](#install-system-dependencies)
+* [Build the Docker Image](#build-the-docker-image)
+* [Build and run the Docker container](#build-and-run-the-docker-container)
+* [Build the libdsl.so](#build-the-libdslso)
+* [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
+* [Troubleshooting](#troubleshooting)
+
+---
+
 ### Install system dependencies
 First, clone the repo and make all scripts executable.
 ```
@@ -25,7 +35,7 @@ Then, run the one-time setup script (unless you already have Docker setup) - **C
 ```
 ./docker_setup.sh
 ```
- 
+
 ### Build the Docker Image
 Execute the Docker build script to build the `dsl.alpha:latest` image.
 ```bash
@@ -46,7 +56,6 @@ Once in interactive mode, copy and execute the following commands.
 # make lib
 ```
 **Note:** the library will be copied to `/usr/local/lib` once built.    
-
 
 ### Generate caffemodel engine files (optional)
 Enable DSL logging if you wish to monitor the process (optional).
@@ -76,9 +85,9 @@ Update the Primary detector path specification in the script to generate files f
 docker: Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: 
 starting container process caused: error adding seccomp filter rule for syscall clone3: permission denied: unknown.
 ```
-Requires a patch release from NVIDIA - see https://github.com/dusty-nv/jetson-containers/issues/108
+NVIDIA requires a specific release of Docker - see https://github.com/dusty-nv/jetson-containers/issues/108
 
-Solution
+Solution, reinstall the correct version with the following commands.
 ```
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
    && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
