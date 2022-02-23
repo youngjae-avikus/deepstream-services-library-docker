@@ -41,11 +41,29 @@ Execute the Docker run script to build and run the container in interactive mode
 ### Build the `libdsl.so`
 Once in interactive mode, copy and execute the follow comands.
 ```
-cd /opt/prominenceai/deepstream-services-library \
-    make -j 4 \
-    make lib
+# cd /opt/prominenceai/deepstream-services-library
+# make -j 4
+# make lib
 ```
-**Note:** the library will be copied to `/usr/lib` once built.    
+**Note:** the library will be copied to `/usr/local/lib` once built.    
 
+---
 
+### Troubleshooting
+#### Docker errors after updating device softwere - including latest version of Docker.
+```
+docker: Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: 
+starting container process caused: error adding seccomp filter rule for syscall clone3: permission denied: unknown.
+```
+Requires a patch release from NVIDIA - see https://github.com/dusty-nv/jetson-containers/issues/108
+
+Solution
+```
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+
+sudo apt-get update
+sudo apt-get install nvidia-docker2=2.8.0-1
+```
 
