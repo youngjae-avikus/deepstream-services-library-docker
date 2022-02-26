@@ -1,7 +1,11 @@
+[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/prominenceai/deepstream-services-library-docker?include_prereleases)](https://github.com/canammex-tech/deepstream-services-library/releases)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/prominenceai/deepstream-services-library-docker/blob/master/LICENSE)
+[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://discord.com/channels/750454524849684540/750457019260993636)
+
 # deepstream-services-library-docker
 This repo contains a Dockerfile and utility scripts for the [Deepstream Services Library](https://github.com/prominenceai/deepstream-services-library) (DSL). 
 
-Import notes:
+Important notes:
 * Jetson only - dGPU files are still to be developed.
 * Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
 * Remaining issues require two additional build steps -- in interactive mode -- to build the `libdsl.so` once the container is running.
@@ -22,6 +26,7 @@ Import notes:
 * [Build and run the Docker container](#build-and-run-the-docker-container)
 * [Build the libdsl.so](#build-the-libdslso)
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
+* [Commit your file changes](#commit-your-file-changes)
 * [Troubleshooting](#troubleshooting)
 
 ---
@@ -76,6 +81,20 @@ The following files are generated (Jetson Nano versions by default)
 /opt/nvidia/deepstream/deepstream/samples/models/Secondary_VehicleTypesresnet18.caffemodel_b8_gpu0_fp16.engine
 ```
 Update the Primary detector path specification in the script to generate files for other devices. 
+
+### Commit your file changes.
+**Caution** the `docker_run.sh` script includes the `-rm` flag in the run command to remove the container on exit. All changes you've made in the running container will be lost.
+
+Use the following Docker commands to list the running containers and to commit your changes to a new image.
+```
+$ sudo docker ps
+CONTAINER ID   IMAGE          COMMAND       CREATED      STATUS      PORTS     NAMES
+1a0b1ebbc321   214a38f109f0   "/bin/bash"   2 days ago   Up 2 days             serene_cartwright
+
+$ sudo docker commit 1a0b1ebbc321  <repo-name>:<tag>
+
+```
+Then update your `docker_run.sh` script with your new image name.
 
 ---
 
