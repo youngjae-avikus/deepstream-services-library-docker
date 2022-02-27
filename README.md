@@ -22,7 +22,8 @@ Important notes:
 
 ## Contents
 * [Install system dependencies](#install-system-dependencies)
-* [Build the Docker Image](#build-the-docker-image)
+* [Create a local Docker Registry](#create-a-local-docker-registry)
+* [Build, tag, and push the Docker Image](#build-tag-and-push-the-docker-image)
 * [Build and run the Docker container](#build-and-run-the-docker-container)
 * [Build the libdsl.so](#build-the-libdslso)
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
@@ -33,29 +34,44 @@ Important notes:
 
 ### Install system dependencies
 First, clone the repo and make all scripts executable.
-```
+```bash
 chmod +x *.sh
 ```
 Then, run the one-time setup script (unless you already have Docker setup) - **Caution: this script reboots your Jetson device without warning!** Ensure all work is saved before you execute.
-```
+```bash
 ./docker_setup.sh
 ```
 
-### Build the Docker Image
-Execute the Docker build script to build the `dsl.alpha:latest` image.
+### Create a local Docker Registry
+Enter the following command to create a local Docker registry - one-time setup.
 ```bash
-./docker_build.sh 
+sudo docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
+
+### Build, tag, and push the Docker Image
+Build the Docker image with the following command. Make sure to add the current directory `.` as imput.
+```bash
+sudo docker build -t dsl:0 . 
+```
+Then, tag the image.
+```bash
+sudo docker tag dsl:0 localhost:5000/dsl:latest
+```
+Push the image to the registry
+```bash
+sudo docker push localhost:5000/dsl:latest
+```
+
 
 ### Build and run the Docker container
 Execute the Docker run script to build and run the container in interactive mode.
-```
+```bash
 ./docker_run.sh
 ```
 
 ### Build the `libdsl.so`
 Once in interactive mode, copy and execute the following commands.
-```
+```bash
 # cd /opt/prominenceai/deepstream-services-library
 # make -j 4
 # make lib
@@ -64,11 +80,11 @@ Once in interactive mode, copy and execute the following commands.
 
 ### Generate caffemodel engine files (optional)
 Enable DSL logging if you wish to monitor the process (optional).
-```
+```bash
 # export GST_DEBUG=1,DSL:4
 ```
 execute the python script in the `/opt/prominenceai/deepstream-services-library` root folder.
-```
+```bash
 # python3 make_caffemodel_engine_files.py
 ```
 **Note:** this script can take several minutes to run.
@@ -86,7 +102,7 @@ Update the Primary detector path specification in the script to generate files f
 **Caution** the `docker_run.sh` script includes the `-rm` flag in the run command to remove the container on exit. All changes you've made in the running container will be lost.
 
 Use the following Docker commands to list the running containers and to commit your changes to a new image.
-```
+```bash
 $ sudo docker ps
 CONTAINER ID   IMAGE          COMMAND       CREATED      STATUS      PORTS     NAMES
 1a0b1ebbc321   214a38f109f0   "/bin/bash"   2 days ago   Up 2 days             serene_cartwright
@@ -100,14 +116,14 @@ Then update your `docker_run.sh` script with your new image name.
 
 ### Troubleshooting
 #### Docker errors after updating device software - including the latest version of Docker.
-```
+```bash
 docker: Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: 
 starting container process caused: error adding seccomp filter rule for syscall clone3: permission denied: unknown.
 ```
 NVIDIA requires a specific release of Docker - see https://github.com/dusty-nv/jetson-containers/issues/108
 
 Solution, reinstall the correct version with the following commands.
-```
+```bash
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
    && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
    && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
