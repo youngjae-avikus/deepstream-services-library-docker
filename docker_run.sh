@@ -14,5 +14,5 @@ sudo docker run \
     -v /tmp/.X11-unix/:/tmp/.X11-unix \
     -v ${HOME}/Downloads:/output \
     -w /opt/prominenceai/deepstream-services-library \
-    dsl.alpha:latest
+    localhost:5000/dsl:latest
 
