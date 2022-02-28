@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
 # First update os
-sudo apt-get update  
+# Setup the distribution to pick a specific version of Docker
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
 
-# Install systems dependencies 
-# Download Docker
-wget https://launchpadlibrarian.net/511874292/docker.io_19.03.6-0ubuntu1~18.04.3_arm64.deb
-# Install Docker
-sudo dpkg -i docker.io_19.03.6-0ubuntu1~18.04.3_arm64.deb
-# Remove Docker .deb
-rm -rf  docker.io_19.03.6-0ubuntu1~18.04.3_arm64.deb
-# Install pip(s) 
+sudo apt-get update
+sudo apt-get install nvidia-docker2=2.8.0-1rm -rf  docker.io_19.03.6-0ubuntu1~18.04.3_arm64.deb
+
+# Install pip(s) and setuptoos module
 sudo apt-get install -y python3-pip
 sudo apt-get install -y python-pip
+sudo apt-get install -y python3-setuptools
+
 # Install Docker compose
 sudo apt-get install curl libffi-dev python-openssl libssl-dev zlib1g-dev gcc g++ make -y
 sudo pip3 install docker-compose
 sudo docker-compose --version
-# Reboot 
-sudo reboot
