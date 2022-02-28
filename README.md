@@ -14,14 +14,13 @@ Important notes:
 
 ### Files
 * `docker_setup.sh` - one time installation of Docker and its system dependencies.
-* `docker_build.sh` - builds the docker image.
 * `docker_run.sh` - builds and runs the container in interactive mode - removes the container on exit.
 * `Dockerfile` - Docker file used by the `docker_build.sh` script.
 
 *... and many thanks to [@gigwegbe](https://github.com/gigwegbe) for creating the above files!*
 
 ## Contents
-* [Install system dependencies](#install-system-dependencies)
+* [Install Docker and Docker Compose](#install-docker-and-docker-compose)
 * [Create a local Docker Registry](#create-a-local-docker-registry)
 * [Build, tag, and push the Docker Image](#build-tag-and-push-the-docker-image)
 * [Build and run the Docker container](#build-and-run-the-docker-container)
@@ -32,12 +31,13 @@ Important notes:
 
 ---
 
-### Install system dependencies
+### Install Docker and docker-compose
+
 First, clone the repo and make all scripts executable.
 ```bash
 chmod +x *.sh
 ```
-Then, run the one-time setup script (unless you already have Docker setup) - **Caution: this script reboots your Jetson device without warning!** Ensure all work is saved before you execute.
+Then, run the one-time setup script to ensure the correct versions of `docker` and `docker-compose` are installed. 
 ```bash
 ./docker_setup.sh
 ```
