@@ -21,47 +21,65 @@ Important notes:
 
 ## Contents
 * [Install Docker and Docker Compose](#install-docker-and-docker-compose)
+* [Set the default Docker runtime](set_the_default_docker_runtime)
+* [Add current user to docker group](add_current_user_to_docker_group)
+* [Re-login or reboot](re-login-or-reboot)
 * [Create a local Docker Registry](#create-a-local-docker-registry)
-* [Build, tag, and push the Docker Image](#build-tag-and-push-the-docker-image)
+* [Build the Docker Image](#build-the-docker-image)
 * [Build and run the Docker container](#build-and-run-the-docker-container)
 * [Build the libdsl.so](#build-the-libdslso)
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
 * [Commit your file changes](#commit-your-file-changes)
+* [Deploy the image to the local Docker registry](deploy_the_image_to_the_local_docker_registry)
 * [Troubleshooting](#troubleshooting)
 
 ---
 
-### Install Docker and docker-compose
-
+### Install Docker and Docker Compose
 First, clone the repo and make all scripts executable.
 ```bash
 chmod +x *.sh
 ```
-Then, run the one-time setup script to ensure the correct versions of `docker` and `docker-compose` are installed. 
+Then, run the one-time setup script to ensure you have the correct versions of `docker` and `docker-compose` are installed. 
 ```bash
 ./docker_setup.sh
 ```
 
+### Set the default Docker runtime
+Set the NVidia runtime as a default runtime in Docker. Your /etc/docker/daemon.json file should look like this.
+```json
+{
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+```
+### Add current user to docker group
+Add a current user to the docker group to use docker commands without sudo. You can refer to this guide: https://docs.docker.com/install/linux/linux-postinstall/. for more information.
+```bash
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+### Re-login or reboot
+Your group membership needs to be re-evaluated. Either logout and log back in or reboot your device. 
+
 ### Create a local Docker Registry
 Enter the following command to create a local Docker registry - one-time setup.
 ```bash
-sudo docker run -d -p 5000:5000 --restart=always --name registry registry:2
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
-### Build, tag, and push the Docker Image
+### Build the Docker Image
 Build the Docker image with the following command. Make sure to add the current directory `.` as imput.
 ```bash
-sudo docker build -t dsl:0 . 
+docker build -t dsl:0 . 
 ```
-Then, tag the image.
-```bash
-sudo docker tag dsl:0 localhost:5000/dsl:latest
-```
-Push the image to the registry
-```bash
-sudo docker push localhost:5000/dsl:latest
-```
-
 
 ### Build and run the Docker container
 Execute the Docker run script to build and run the container in interactive mode.
@@ -103,16 +121,22 @@ Update the Primary detector path specification in the script to generate files f
 
 Use the following Docker commands to list the running containers and to commit your changes to a new image.
 ```bash
-$ sudo docker ps
+$ docker ps
 CONTAINER ID   IMAGE          COMMAND       CREATED      STATUS      PORTS     NAMES
 1a0b1ebbc321   214a38f109f0   "/bin/bash"   2 days ago   Up 2 days             serene_cartwright
 
-$ sudo docker commit 1a0b1ebbc321  <repo-name>:<tag>
+$ docker commit 1a0b1ebbc321  localhost:5000/<name>:<tag>
 
 ```
-Then update your `docker_run.sh` script with your new image name.
+Then update your `docker_run.sh` script with your new image name, the string you specified for `localhost:5000/<name>:<tag>`
 
 ---
+
+### Deploy the image to the local Docker registry
+Use the following command to push the new image to the registry.
+```bash
+sudo docker push localhost:5000/<name>:<tag>
+```
 
 ### Troubleshooting
 #### Docker errors after updating device software - including the latest version of Docker.
