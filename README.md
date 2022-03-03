@@ -46,7 +46,7 @@ Then, run the one-time setup script to ensure you have the correct versions of `
 ```
 
 ### Set the default Docker runtime
-Set the NVidia runtime as a default runtime in Docker. Your /etc/docker/daemon.json file should look like this.
+Set the NVIDIA runtime as a default runtime in Docker. Update your /etc/docker/daemon.json file to read as follows.
 ```json
 {
     "default-runtime": "nvidia",
