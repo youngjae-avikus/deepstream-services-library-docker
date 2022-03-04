@@ -4,7 +4,7 @@ set -eu
 
 xhost +
 
-sudo docker run \
+docker run \
     -it \
     --rm \
     --net=host \
