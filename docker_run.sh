@@ -14,5 +14,5 @@ docker run \
     -v /tmp/.X11-unix/:/tmp/.X11-unix \
     -v ${HOME}/Downloads:/output \
     -w /opt/prominenceai/deepstream-services-library \
-    localhost:5000/dsl:latest
+    dsl:0
 
