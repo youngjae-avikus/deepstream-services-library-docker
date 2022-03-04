@@ -8,8 +8,8 @@ This repo contains a Dockerfile and utility scripts for the [Deepstream Services
 Important notes:
 * Jetson only - dGPU files are still to be developed.
 * Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
-* Remaining issues require two additional build steps -- in interactive mode -- to build the `libdsl.so` once the container is running.
-* The `deepstream-services-library` repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`
+* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step until ***DSL v0.23.alpha*** is released and the required `libdsl.so` can be pulled from GitHub directly.
+* Additional build steps -- in interactive mode -- are required to build the `libdsl.so` once the container is running.
 * **CAUTION: this repo is in the early stages of development -- please report issues!**
 
 ### Files
@@ -49,13 +49,13 @@ Then, run the one-time setup script to ensure you have the correct versions of `
 Set the NVIDIA runtime as a default runtime in Docker. Update your /etc/docker/daemon.json file to read as follows.
 ```json
 {
-    "default-runtime": "nvidia",
-    "runtimes": {
-        "nvidia": {
-            "path": "nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
 }
 ```
 ### Add current user to docker group
@@ -76,7 +76,7 @@ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
 ### Build the Docker Image
-Build the Docker image with the following command. Make sure to add the current directory `.` as imput.
+Build the Docker image with the following command. Make sure to add the current directory `.` as input.
 ```bash
 docker build -t dsl:0 . 
 ```
@@ -90,16 +90,17 @@ Execute the Docker run script to build and run the container in interactive mode
 ### Build the `libdsl.so`
 Once in interactive mode, copy and execute the following commands.
 ```bash
-# cd /opt/prominenceai/deepstream-services-library
-# make -j 4
-# make lib
+cd /opt/prominenceai/deepstream-services-library
+git checkout v0.23.alpha
+make -j 4
+make lib
 ```
 **Note:** the library will be copied to `/usr/local/lib` once built.    
 
 ### Generate caffemodel engine files (optional)
 Enable DSL logging if you wish to monitor the process (optional).
 ```bash
-# export GST_DEBUG=1,DSL:4
+export GST_DEBUG=1,DSL:4
 ```
 execute the python script in the `/opt/prominenceai/deepstream-services-library` root folder.
 ```bash
@@ -119,23 +120,24 @@ Update the Primary detector path specification in the script to generate files f
 ### Commit your file changes.
 **Caution** the `docker_run.sh` script includes the `-rm` flag in the run command to remove the container on exit. All changes you've made in the running container will be lost.
 
-Use the following Docker commands to list the running containers and to commit your changes to a new image.
+Use the `docker ps` command to list the running containers.
 ```bash
 $ docker ps
-CONTAINER ID   IMAGE          COMMAND       CREATED      STATUS      PORTS     NAMES
-1a0b1ebbc321   214a38f109f0   "/bin/bash"   2 days ago   Up 2 days             serene_cartwright
-
-$ docker commit 1a0b1ebbc321  localhost:5000/<name>:<tag>
-
+CONTAINER ID   IMAGE          COMMAND       CREATED      STATUS      PORTS     NAMES
+1a0b1ebbc321   214a38f109f0   "/bin/bash"   2 days ago   Up 2 days             serene_cartwright
 ```
-Then update your `docker_run.sh` script with your new image name, the string you specified for `localhost:5000/<name>:<tag>`
+Then commit the container using the same image name.
+```bash
+$ docker commit 1a0b1ebbc321  localhost:5000/dsl:latest
+```
+you can now safely `# exit` from interactive mode with all changes persisted. 
 
 ---
 
 ### Deploy the image to the local Docker registry
-Use the following command to push the new image to the registry.
+Use the following command to push the new image to the registry for deployment.
 ```bash
-sudo docker push localhost:5000/<name>:<tag>
+docker push localhost:5000/dsl:latest
 ```
 
 ### Troubleshooting
