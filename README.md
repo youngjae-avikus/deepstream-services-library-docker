@@ -49,13 +49,13 @@ Then, run the one-time setup script to ensure you have the correct versions of `
 Set the NVIDIA runtime as a default runtime in Docker. Update your /etc/docker/daemon.json file to read as follows.
 ```json
 {
-    "default-runtime": "nvidia",
-    "runtimes": {
-        "nvidia": {
-            "path": "nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+        "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
 }
 ```
 ### Add current user to docker group
