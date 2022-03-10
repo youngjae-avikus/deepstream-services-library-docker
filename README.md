@@ -15,7 +15,7 @@ Important notes:
 ### Files
 * `docker_setup.sh` - one time installation of Docker and its system dependencies.
 * `docker_run.sh` - builds and runs the container in interactive mode - removes the container on exit.
-* `Dockerfile` - Docker file used by the `docker_build.sh` script.
+* `Dockerfile` - Docker file used by the [Docker build command](#build-the-docker-image)
 
 *... and many thanks to [@gigwegbe](https://github.com/gigwegbe) for creating the above files!*
 
@@ -123,14 +123,19 @@ Update the Primary detector path specification in the script to generate files f
 Use the `docker ps` command to list the running containers.
 ```bash
 $ docker ps
-CONTAINER ID   IMAGE          COMMAND       CREATED      STATUS      PORTS     NAMES
-1a0b1ebbc321   214a38f109f0   "/bin/bash"   2 days ago   Up 2 days             serene_cartwright
+CONTAINER ID   IMAGE                                      COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+da912760ce82   dsl:0                                      "/bin/bash"              42 minutes ago   Up 42 minutes                                               festive_brattain
+26287d283d32   registry:2                                 "/entrypoint.sh /etc…"   3 hours ago      Up 3 hours      0.0.0.0:5000->5000/tcp, :::5000->5000/tcp   registry
+605a54fa586d   mcr.microsoft.com/azureiotedge-agent:1.0   "/bin/sh -c 'exec /a…"   4 hours ago      Up 3 hours                                                  edgeAgent
+
 ```
-Then commit the container using the same image name.
+Then commit the container by ID, using the image name.
 ```bash
-$ docker commit 1a0b1ebbc321  localhost:5000/dsl:latest
+$ docker commit da912760ce82 localhost:5000/dsl:latest
 ```
-you can now safely `# exit` from interactive mode with all changes persisted. 
+you can now safely `# exit` from interactive mode with all changes persisted.
+
+Update your `docker_run.sh` script with the new `localhost:5000/dsl:latest` image name.
 
 ---
 
