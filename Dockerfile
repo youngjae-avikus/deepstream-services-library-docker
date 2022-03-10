@@ -1,5 +1,5 @@
-ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
-#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-iot
+#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
+ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-triton
 FROM ${BASE_IMAGE}
 
 ARG ROOT_NAME=/opt/prominenceai
@@ -68,7 +68,6 @@ RUN apt-get install -y apache2-dev
 RUN ldconfig
 RUN apt --fix-broken install
 RUN apt-get install libapr1 libapr1-dev
-
 
 RUN mkdir ${ROOT_NAME}
 WORKDIR ${ROOT_NAME}
