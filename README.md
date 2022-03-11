@@ -36,11 +36,13 @@ Important notes:
 ---
 
 ### Install Docker and Docker Compose
+***Important note: NVIDIA requires a specific release of Docker.  See the [Troubleshooting](#troubleshooting) section if docker commands fail after updating your system with Software Updater.***
+
 First, clone the repo and make all scripts executable.
 ```bash
 chmod +x *.sh
 ```
-Then, run the one-time setup script to ensure you have the correct versions of `docker` and `docker-compose` are installed. 
+Then, run the one-time setup script to ensure that you have the correct versions of `docker` and `docker-compose` installed. 
 ```bash
 ./docker_setup.sh
 ```
@@ -61,9 +63,9 @@ Set the NVIDIA runtime as a default runtime in Docker. Update your /etc/docker/d
 ### Add current user to docker group
 Add a current user to the docker group to use docker commands without sudo. You can refer to this guide: https://docs.docker.com/install/linux/linux-postinstall/. for more information.
 ```bash
-sudo groupadd docker
-sudo usermod -aG docker $USER
-newgrp docker
+sudo groupadd docker ; \
+    sudo usermod -aG docker $USER ; \
+    newgrp docker
 ```
 
 ### Re-login or reboot
@@ -90,10 +92,10 @@ Execute the Docker run script to build and run the container in interactive mode
 ### Build the `libdsl.so`
 Once in interactive mode, copy and execute the following commands.
 ```bash
-cd /opt/prominenceai/deepstream-services-library
-git checkout v0.23.alpha
-make -j 4
-make lib
+cd /opt/prominenceai/deepstream-services-library ; \
+    git checkout v0.23.alpha ; \
+    make -j 4 ; \
+    make lib
 ```
 **Note:** the library will be copied to `/usr/local/lib` once built.    
 
