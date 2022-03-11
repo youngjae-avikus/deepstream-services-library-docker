@@ -48,7 +48,7 @@ Then, run the one-time setup script to ensure that you have the correct versions
 ```
 
 ### Set the default Docker runtime
-Set the NVIDIA runtime as a default runtime in Docker. Update your /etc/docker/daemon.json file to read as follows.
+Set the NVIDIA runtime as a default runtime in Docker. Update your `/etc/docker/daemon.json` file to read as follows.
 ```json
 {
     "default-runtime": "nvidia",
@@ -63,9 +63,7 @@ Set the NVIDIA runtime as a default runtime in Docker. Update your /etc/docker/d
 ### Add current user to docker group
 Add a current user to the docker group to use docker commands without sudo. You can refer to this guide: https://docs.docker.com/install/linux/linux-postinstall/. for more information.
 ```bash
-sudo groupadd docker ; \
-    sudo usermod -aG docker $USER ; \
-    newgrp docker
+sudo usermod -aG docker $USER ; newgrp docker
 ```
 
 ### Re-login or reboot
@@ -95,7 +93,8 @@ Once in interactive mode, copy and execute the following commands.
 cd /opt/prominenceai/deepstream-services-library ; \
     git checkout v0.23.alpha ; \
     make -j 4 ; \
-    make lib
+    make lib ; \
+    python3 ./setup.py
 ```
 **Note:** the library will be copied to `/usr/local/lib` once built.    
 
