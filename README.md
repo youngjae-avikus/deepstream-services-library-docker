@@ -132,7 +132,7 @@ da912760ce82   dsl:0                                      "/bin/bash"           
 ```
 Then commit the container by ID, using the image name.
 ```bash
-$ docker commit da912760ce82 localhost:5000/dsl:latest
+docker commit da912760ce82 localhost:5000/dsl:latest
 ```
 you can now safely `# exit` from interactive mode with all changes persisted.
 
