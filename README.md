@@ -7,8 +7,8 @@ This repo contains a Dockerfile and utility scripts for the [Deepstream Services
 
 Important notes:
 * Jetson only - dGPU files are still to be developed.
-* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
-* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step until ***DSL v0.23.alpha*** is released and the required `libdsl.so` can be pulled from GitHub directly.
+* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2) - you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image.
+* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary. The `libdsl.so` can/will be pulled from GitHub directly in the next release.
 * Additional build steps -- in interactive mode -- are required to build the `libdsl.so` once the container is running.
 * **CAUTION: this repo is in the early stages of development -- please report issues!**
 
@@ -40,7 +40,17 @@ Important notes:
 
 First, clone the repo and make all scripts executable.
 ```bash
-chmod +x *.sh
+git clone https://github.com/prominenceai/deepstream-services-library-docker ; \
+    cd ./deepstream-services-library-docker ; \
+    chmod +x *.sh
+```
+Ensure you have `curl` installed by entering the following
+```bash
+curl --version
+```
+If not, install `curl` with the following command
+```bash
+sudo apt install curl
 ```
 Then, run the one-time setup script to ensure that you have the correct versions of `docker` and `docker-compose` installed. 
 ```bash
@@ -93,8 +103,7 @@ Once in interactive mode, copy and execute the following commands.
 cd /opt/prominenceai/deepstream-services-library ; \
     git checkout v0.23.alpha ; \
     make -j 4 ; \
-    make lib ; \
-    python3 ./setup.py
+    make install
 ```
 **Note:** the library will be copied to `/usr/local/lib` once built.    
 
@@ -105,7 +114,7 @@ export GST_DEBUG=1,DSL:4
 ```
 execute the python script in the `/opt/prominenceai/deepstream-services-library` root folder.
 ```bash
-# python3 make_caffemodel_engine_files.py
+python3 make_caffemodel_engine_files.py
 ```
 **Note:** this script can take several minutes to run.
 
