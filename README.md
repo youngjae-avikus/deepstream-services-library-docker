@@ -86,7 +86,7 @@ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
 ## Build the Docker Image
-Build the Docker image with the following command. Make sure to add the current directory `.` as input.
+Navigagte to the `deepstream-services-library-docker` folder and build the Docker image with the following command. Make sure to add the current directory `.` as input.
 ```bash
 docker build -t dsl:0 . 
 ```
@@ -130,7 +130,6 @@ Execute the Docker run script to build and run the container in interactive mode
 Once in interactive mode, copy and execute the following commands.
 ```bash
 cd /opt/prominenceai/deepstream-services-library ; \
-    git checkout v0.23.alpha ; \
     make -j 4 ; \
     make install
 ```
