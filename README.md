@@ -7,8 +7,8 @@ This repo contains a Dockerfile and utility scripts for the [Deepstream Services
 
 Important notes:
 * Jetson only - dGPU files are still to be developed.
-* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
-* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step until ***DSL v0.23.alpha*** is released and the required `libdsl.so` can be pulled from GitHub directly.
+* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2) - you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image.
+* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in the next release.
 * Additional build steps -- in interactive mode -- are required to build the `libdsl.so` once the container is running.
 * **CAUTION: this repo is in the early stages of development -- please report issues!**
 
@@ -35,19 +35,29 @@ Important notes:
 
 ---
 
-### Install Docker and Docker Compose
+## Install Docker and Docker Compose
 ***Important note: NVIDIA requires a specific release of Docker.  See the [Troubleshooting](#troubleshooting) section if docker commands fail after updating your system with Software Updater.***
 
 First, clone the repo and make all scripts executable.
 ```bash
-chmod +x *.sh
+git clone https://github.com/prominenceai/deepstream-services-library-docker ; \
+    cd ./deepstream-services-library-docker ; \
+    chmod +x *.sh
+```
+Ensure you have `curl` installed by entering the following
+```bash
+curl --version
+```
+If not, install `curl` with the following command
+```bash
+sudo apt install curl
 ```
 Then, run the one-time setup script to ensure that you have the correct versions of `docker` and `docker-compose` installed. 
 ```bash
 ./docker_setup.sh
 ```
 
-### Set the default Docker runtime
+## Set the default Docker runtime
 Set the NVIDIA runtime as a default runtime in Docker. Update your `/etc/docker/daemon.json` file to read as follows.
 ```json
 {
@@ -60,52 +70,79 @@ Set the NVIDIA runtime as a default runtime in Docker. Update your `/etc/docker/
     }
 }
 ```
-### Add current user to docker group
+## Add current user to docker group
 Add a current user to the docker group to use docker commands without sudo. You can refer to this guide: https://docs.docker.com/install/linux/linux-postinstall/. for more information.
 ```bash
 sudo usermod -aG docker $USER ; newgrp docker
 ```
 
-### Re-login or reboot
+## Re-login or reboot
 Your group membership needs to be re-evaluated. Either logout and log back in or reboot your device. 
 
-### Create a local Docker Registry
+## Create a local Docker Registry
 Enter the following command to create a local Docker registry - one-time setup.
 ```bash
 docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
-### Build the Docker Image
-Build the Docker image with the following command. Make sure to add the current directory `.` as input.
+## Build the Docker Image
+Navigagte to the `deepstream-services-library-docker` folder and build the Docker image with the following command. Make sure to add the current directory `.` as input.
 ```bash
 docker build -t dsl:0 . 
 ```
 
-### Build and run the Docker container
+## Build and run the Docker container
+The Docker run script sets up the environment and runs the container with the below options:
+```bash
+ 1 | docker run \
+ 2 |   -it \
+ 3 |   --rm \
+ 4 |   --net=host \
+ 5 |   --runtime nvidia \
+ 6 |   -e DISPLAY=$DISPLAY \
+ 7 |   -v /tmp/argus_socket:/tmp/argus_socket \
+ 8 |   -v /tmp/.X11-unix/:/tmp/.X11-unix \
+ 9 |   -v /tmp/.dsl/:/tmp/.dsl \
+10 |   -v ${HOME}/Downloads:/output \
+11 |   -w /opt/prominenceai/deepstream-services-library \
+12 |   dsl:0
+
+```
+1. `docker run` Docker run command to build and run the `dsl:0` image in a container.
+2. `-it` - run the container in interactive mode.
+3. `--rm` - remove the container on exit.
+4. `--net=host` - ??.
+5. `--runtime nvidia` - redundant if set in `/etc/docker/daemon.json`.
+6. `-e DISPLAY=$DISPLAY` - sets the display environment variable for the container.
+7. `-v /tmp/argus_socket:/tmp/argus_socket` - argus tmp folder mapped into container.
+8. `-v /tmp/.X11-unix/:/tmp/.X11-unix \` - X11 display folder mapped into container.
+9. `-v /tmp/.dsl/:/tmp/.dsl` - DSL tmp folder, created on DSL installation, mapped into container.
+10. `-v ${HOME}/Downloads:/output` - Downloads folder mapped into container
+11. `-w /opt/prominenceai/deepstream-services-library` - working directory, update as desired.
+12. `dsl:0` - name of the image to run, update as required.
+
 Execute the Docker run script to build and run the container in interactive mode.
 ```bash
 ./docker_run.sh
 ```
 
-### Build the `libdsl.so`
+## Build the `libdsl.so`
 Once in interactive mode, copy and execute the following commands.
 ```bash
 cd /opt/prominenceai/deepstream-services-library ; \
-    git checkout v0.23.alpha ; \
     make -j 4 ; \
-    make lib ; \
-    python3 ./setup.py
+    make install
 ```
 **Note:** the library will be copied to `/usr/local/lib` once built.    
 
-### Generate caffemodel engine files (optional)
+## Generate caffemodel engine files (optional)
 Enable DSL logging if you wish to monitor the process (optional).
 ```bash
 export GST_DEBUG=1,DSL:4
 ```
 execute the python script in the `/opt/prominenceai/deepstream-services-library` root folder.
 ```bash
-# python3 make_caffemodel_engine_files.py
+python3 make_caffemodel_engine_files.py
 ```
 **Note:** this script can take several minutes to run.
 
@@ -118,7 +155,7 @@ The following files are generated (Jetson Nano versions by default)
 ```
 Update the Primary detector path specification in the script to generate files for other devices. 
 
-### Commit your file changes.
+## Commit your file changes.
 **Caution** the `docker_run.sh` script includes the `-rm` flag in the run command to remove the container on exit. All changes you've made in the running container will be lost.
 
 Use the `docker ps` command to list the running containers.
@@ -138,15 +175,15 @@ you can now safely `# exit` from interactive mode with all changes persisted.
 
 Update your `docker_run.sh` script with the new `localhost:5000/dsl:latest` image name.
 
----
-
-### Deploy the image to the local Docker registry
+## Deploy the image to the local Docker registry
 Use the following command to push the new image to the registry for deployment.
 ```bash
 docker push localhost:5000/dsl:latest
 ```
 
-### Troubleshooting
+---
+
+## Troubleshooting
 #### Docker errors after updating device software - including the latest version of Docker.
 ```bash
 docker: Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: 
