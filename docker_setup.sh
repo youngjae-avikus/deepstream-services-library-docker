@@ -15,4 +15,5 @@ sudo apt-get install -y python3-setuptools
 
 # Install Docker compose
 sudo apt-get install curl libffi-dev python-openssl libssl-dev zlib1g-dev gcc g++ make -y
+python3 -m pip install --upgrade pip
 sudo pip3 install docker-compose

@@ -29,6 +29,7 @@ Important notes:
 * [Build and run the Docker container](#build-and-run-the-docker-container)
 * [Build the libdsl.so](#build-the-libdslso)
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
+* [Complete Triton Setup](#complete-triton-setup-optional)
 * [Commit your file changes](#commit-your-file-changes)
 * [Deploy the image to the local Docker registry](deploy_the_image_to_the_local_docker_registry)
 * [Troubleshooting](#troubleshooting)
@@ -155,6 +156,15 @@ The following files are generated (Jetson Nano versions by default)
 ```
 Update the Primary detector path specification in the script to generate files for other devices. 
 
+## Complete Triton Setup (optional)
+To complete the Triton Server backend and model repository setup, navigate to the DeepStream samples root folder and execute the setup scripts with the following command.
+```bash
+cd /opt/nvidia/deepstream/deepstream/samples ; \
+./triton_backend_setup.sh ; \
+./prepare_ds_triton_model_repo.sh
+```
+
+**Note:** execution of the repo setup script can take serveral minutes.
 ## Commit your file changes.
 **Caution** the `docker_run.sh` script includes the `-rm` flag in the run command to remove the container on exit. All changes you've made in the running container will be lost.
 
