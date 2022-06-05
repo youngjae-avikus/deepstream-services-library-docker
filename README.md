@@ -113,7 +113,7 @@ The Docker run script sets up the environment and runs the container with the be
 1. `docker run` Docker run command to build and run the `dsl:0` image in a container.
 2. `-it` - run the container in interactive mode.
 3. `--rm` - remove the container on exit.
-4. `--net=host` - ??.
+4. `--net=host` - when a container is created, the container does not have an independent network(docker0) area and uses the host and the network together.
 5. `--runtime nvidia` - redundant if set in `/etc/docker/daemon.json`.
 6. `-e DISPLAY=$DISPLAY` - sets the display environment variable for the container.
 7. `-v /tmp/argus_socket:/tmp/argus_socket` - argus tmp folder mapped into container.
