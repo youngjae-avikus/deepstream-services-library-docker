@@ -28,6 +28,7 @@ Important notes:
 * [Build the Docker Image](#build-the-docker-image)
 * [Build and run the Docker container](#build-and-run-the-docker-container)
 * [Build the libdsl.so](#build-the-libdslso)
+* [Install pyds module](#install-pyds-module)
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
 * [Complete Triton Setup](#complete-triton-setup-optional)
 * [Commit your file changes](#commit-your-file-changes)
@@ -112,7 +113,7 @@ The Docker run script sets up the environment and runs the container with the be
 1. `docker run` Docker run command to build and run the `dsl:0` image in a container.
 2. `-it` - run the container in interactive mode.
 3. `--rm` - remove the container on exit.
-4. `--net=host` - ??.
+4. `--net=host` - when a container is created, the container does not have an independent network(docker0) area and uses the host and the network together.
 5. `--runtime nvidia` - redundant if set in `/etc/docker/daemon.json`.
 6. `-e DISPLAY=$DISPLAY` - sets the display environment variable for the container.
 7. `-v /tmp/argus_socket:/tmp/argus_socket` - argus tmp folder mapped into container.
@@ -134,7 +135,19 @@ cd /opt/prominenceai/deepstream-services-library ; \
     make -j 4 ; \
     make install
 ```
-**Note:** the library will be copied to `/usr/local/lib` once built.    
+**Note:** the library will be copied to `/usr/local/lib` once built.
+
+## Install `pyds` module
+To test the **custom_pph** python example(1uri_file_pgie_iou_tiler_osd_custom_pph_window.py), the `pyds` module must be installed in advance. Installation is available at the link [deepstream_python_apps](https://github.com/NVIDIA-AI-IOT/deepstream_python_apps). You can download and install whl from the [release page](https://github.com/NVIDIA-AI-IOT/deepstream_python_apps/releases)
+
+For example, if environment is Nvidia Jetson, Ubuntu 18.04, Python 3.6, DeepStream SDK 6.0.1
+
+```bash
+wget pyds-1.1.1-py3-none-linux_aarch64.whl
+pip3 install pyds-1.1.1-py3-none-linux_aarch64.whl
+```
+
+**Note:** For previous DeepStream versions, refer to the previous release
 
 ## Generate caffemodel engine files (optional)
 Enable DSL logging if you wish to monitor the process (optional).
