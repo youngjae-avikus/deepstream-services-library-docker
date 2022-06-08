@@ -1,4 +1,3 @@
-#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0.1-samples
 ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0.1-triton
 FROM ${BASE_IMAGE}
 
