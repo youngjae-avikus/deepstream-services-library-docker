@@ -1,0 +1,39 @@
+## Build command; docker build -f Dockerfile50 -t dsl:ds5 . ;
+
+ARG BASE_IMAGE=nvcr.io/nvidia/deepstream:5.0.1-20.09-triton
+FROM ${BASE_IMAGE}
+
+ARG DSL_BRANCH=master
+ARG ROOT_NAME=/opt/dsl
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG C.UTF-8
+ENV PATH="/usr/local/cuda/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
+
+WORKDIR /tmp
+
+RUN	apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libgeos-dev \
+		libapr1-dev \
+		libaprutil1-dev \
+		software-properties-common
+
+RUN add-apt-repository --yes ppa:deadsnakes/ppa
+RUN apt-get update && \
+	apt-get install -y python3.6 python3.6-distutils python3.6-dev
+
+RUN python3 -m pip install --upgrade pip 
+ 
+RUN mkdir ${ROOT_NAME}
+WORKDIR ${ROOT_NAME}
+
+RUN git clone https://github.com/youngjae-avikus/deepstream-services-library.git
+WORKDIR ${ROOT_NAME}/deepstream-services-library
+
+RUN if [ "$DSL_BRANCH" != "master" ] ; then git checkout ${DSL_BRANCH} ; fi
+RUN cp /usr/lib/x86_64-linux-gnu/pkgconfig/opencv.pc /usr/lib/x86_64-linux-gnu/pkgconfig/opencv4.pc
+
+RUN make -j$(nproc)
+RUN make install
