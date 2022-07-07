@@ -29,11 +29,27 @@ RUN python3 -m pip install --upgrade pip
 RUN mkdir ${ROOT_NAME}
 WORKDIR ${ROOT_NAME}
 
+RUN apt update && apt-get install -y \
+    libgstrtspserver-1.0-dev \
+    gstreamer1.0-rtsp \
+    libapr1 \
+    libapr1-dev \
+    libaprutil1 \
+    libaprutil1-dev \
+    libgeos-dev \
+    python3-opencv \
+    libcurl4-openssl-dev \
+    libjson-glib-1.0-0 \
+    libsoup-gnome2.4-dev
+
 RUN git clone https://github.com/youngjae-avikus/deepstream-services-library.git
 WORKDIR ${ROOT_NAME}/deepstream-services-library
 
 RUN if [ "$DSL_BRANCH" != "master" ] ; then git checkout ${DSL_BRANCH} ; fi
 RUN cp /usr/lib/x86_64-linux-gnu/pkgconfig/opencv.pc /usr/lib/x86_64-linux-gnu/pkgconfig/opencv4.pc
 
-RUN make -j$(nproc)
-RUN make install
+#RUN make -j$(nproc)
+#RUN make install
+
+RUN cd /opt/nvidia/deepstream/deepstream/lib
+RUN python3 setup.py install
