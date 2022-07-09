@@ -13,7 +13,4 @@ docker run \
     -v /tmp/argus_socket:/tmp/argus_socket \
     -v /tmp/.X11-unix/:/tmp/.X11-unix \
     -v /tmp/.dsl/:/tmp/.dsl \
-    -v ${HOME}/Downloads:/output \
-    -w /opt/prominenceai/deepstream-services-library \
-    dsl:0
-
+	dsl:jetson

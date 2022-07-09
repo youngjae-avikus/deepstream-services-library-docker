@@ -1,5 +1,4 @@
-#ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-samples
-ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0-triton
+ARG BASE_IMAGE=nvcr.io/nvidia/deepstream-l4t:6.0.1-triton
 FROM ${BASE_IMAGE}
 
 ARG ROOT_NAME=/opt/prominenceai
@@ -31,15 +30,11 @@ RUN apt install \
 	libgstrtspserver-1.0-0 \
 	libjansson4=2.11-1
 
-RUN apt-get update
 RUN apt-get install libgstrtspserver-1.0-dev gstreamer1.0-rtsp
 RUN apt-get install -y libgeos-dev 
-RUN apt-get update
-#RUN apt-get install -y python3-opencv
-RUN apt-get install -y  vim
-RUN apt-get update
+RUN apt-get install -y vim
 RUN apt-get install -y libcurl4-openssl-dev
-RUN apt-get install -y graphviz imagemagick
+RUN apt-get install -y imagemagick
 RUN apt-get install -y doxygen
 RUN apt-get install -y unzip
 RUN apt-get install -y build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
@@ -52,15 +47,10 @@ RUN apt-get install -y python3-pip
 RUN apt-get install -y python-pip
 RUN pip3 install --upgrade pip 
 RUN apt-get install -y python3-opencv
-RUN pip3 install numpy==1.19.4 
+RUN pip3 install numpy==1.19.4
 RUN apt-get install -y  libapr1 libapr1-dev libaprutil1 libaprutil1-dev
-RUN apt-get update
-RUN apt install -y libgeos-dev 
-RUN apt install -y libcurl4-openssl-dev
 RUN apt install -y libjson-glib-1.0-0
 RUN apt install -y libsoup-gnome2.4-dev
-RUN apt install -y graphviz imagemagick
-RUN apt install -y doxygen
 RUN apt-get install -y libopencv-dev 
 RUN cp -r /usr/lib/aarch64-linux-gnu/pkgconfig/opencv.pc /usr/lib/aarch64-linux-gnu/pkgconfig/opencv4.pc
 
@@ -75,5 +65,5 @@ WORKDIR ${ROOT_NAME}
 RUN git clone https://github.com/prominenceai/deepstream-services-library.git
 WORKDIR ${ROOT_NAME}/deepstream-services-library
 RUN ls
-#RUN make -j 4
-#RUN make lib
+RUN make -j$(nproc)
+RUN make install
