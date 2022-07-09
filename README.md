@@ -3,12 +3,14 @@
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://discord.com/channels/750454524849684540/750457019260993636)
 
 # deepstream-services-library-docker
-This repo contains a Dockerfile and utility scripts for the [Deepstream Services Library](https://github.com/prominenceai/deepstream-services-library) (DSL). 
+This repo contains Jetson and dGPU Dockerfiles and utility scripts for the [Deepstream Services Library](https://github.com/prominenceai/deepstream-services-library) (DSL). 
 
 Important notes:
-* Jetson only - dGPU files are still to be developed.
-* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2) - you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image.
-* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in the next release.
+* Base images (Note: you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image).
+  * Jetson - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
+  * dGPU - [`nvcr.io/nvidia/deepstream:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id1)
+  
+* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in a future release.
 * Additional build steps -- in interactive mode -- are required to build the `libdsl.so` once the container is running.
 * **CAUTION: this repo is in the early stages of development -- please report issues!**
 
@@ -17,7 +19,7 @@ Important notes:
 * `docker_run.sh` - builds and runs the container in interactive mode - removes the container on exit.
 * `Dockerfile` - Docker file used by the [Docker build command](#build-the-docker-image)
 
-*... and many thanks to [@gigwegbe](https://github.com/gigwegbe) for creating the above files!*
+*... and many thanks to [@gigwegbe](https://github.com/gigwegbe) and [@youngjae-avikus](https://github.com/youngjae-avikus) for their contributions!*
 
 ## Contents
 * [Install Docker and Docker Compose](#install-docker-and-docker-compose)
