@@ -42,11 +42,21 @@ Important notes:
 ## Install Docker and Docker Compose
 ***Important note: NVIDIA requires a specific release of Docker.  See the [Troubleshooting](#troubleshooting) section if docker commands fail after updating your system with Software Updater.***
 
-First, clone the repo and make all scripts executable.
+First, clone the DSL Docker GitHub repository.
 ```bash
-git clone https://github.com/prominenceai/deepstream-services-library-docker ; \
-    cd ./deepstream-services-library-docker ; \
-    chmod +x *.sh
+git clone https://github.com/prominenceai/deepstream-services-library-docker
+```
+Navigate to the platform specific folder. For Jetson
+```bash
+cd deepstream-services-library-docker/jetson
+```
+or for dGPU
+```bash
+cd deepstream-services-library-docker/dgpu
+```
+Then make all sripts writable
+```bash
+chmod +x *.sh
 ```
 Ensure you have `curl` installed by entering the following
 ```bash
@@ -68,7 +78,7 @@ Set the NVIDIA runtime as a default runtime in Docker. Update your `/etc/docker/
     "default-runtime": "nvidia",
     "runtimes": {
         "nvidia": {
-        "path": "nvidia-container-runtime",
+            "path": "nvidia-container-runtime",
             "runtimeArgs": []
         }
     }
