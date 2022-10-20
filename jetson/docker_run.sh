@@ -13,4 +13,4 @@ docker run \
     -v /tmp/argus_socket:/tmp/argus_socket \
     -v /tmp/.X11-unix/:/tmp/.X11-unix \
     -v /tmp/.dsl/:/tmp/.dsl \
-	dsl:jetson
+	dsl:0
