@@ -7,7 +7,7 @@ This repo contains Jetson and dGPU Dockerfiles and utility scripts for the [Deep
 
 Important notes:
 * Base images (Note: you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image).
-  * Jetson - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
+  * Jetson - [`nvcr.io/nvidia/deepstream-l4t:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
   * dGPU - [`nvcr.io/nvidia/deepstream:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id1)
   
 * The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in a future release.
@@ -42,11 +42,21 @@ Important notes:
 ## Install Docker and Docker Compose
 ***Important note: NVIDIA requires a specific release of Docker.  See the [Troubleshooting](#troubleshooting) section if docker commands fail after updating your system with Software Updater.***
 
-First, clone the repo and make all scripts executable.
+First, clone the DSL Docker GitHub repository.
 ```bash
-git clone https://github.com/prominenceai/deepstream-services-library-docker ; \
-    cd ./deepstream-services-library-docker ; \
-    chmod +x *.sh
+git clone https://github.com/prominenceai/deepstream-services-library-docker
+```
+Navigate to the platform specific folder. For Jetson
+```bash
+cd deepstream-services-library-docker/jetson
+```
+or for dGPU
+```bash
+cd deepstream-services-library-docker/dgpu
+```
+Then make all sripts writable
+```bash
+chmod +x *.sh
 ```
 Ensure you have `curl` installed by entering the following
 ```bash
@@ -68,7 +78,7 @@ Set the NVIDIA runtime as a default runtime in Docker. Update your `/etc/docker/
     "default-runtime": "nvidia",
     "runtimes": {
         "nvidia": {
-        "path": "nvidia-container-runtime",
+            "path": "nvidia-container-runtime",
             "runtimeArgs": []
         }
     }
@@ -90,7 +100,15 @@ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
 ## Build the Docker Image
-Navigagte to the `deepstream-services-library-docker` folder and build the Docker image with the following command. Make sure to add the current directory `.` as input.
+Navigate to the platform specific DSL Docker folder again. For Jetson
+```bash
+cd deepstream-services-library-docker/jetson
+```
+or for dGPU
+```bash
+cd deepstream-services-library-docker/dgpu
+```
+and build the Docker image with the following command. Make sure to add the current directory `.` as input.
 ```bash
 docker build -t dsl:0 . 
 ```
