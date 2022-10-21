@@ -100,7 +100,15 @@ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
 ## Build the Docker Image
-Navigagte to the `deepstream-services-library-docker` folder and build the Docker image with the following command. Make sure to add the current directory `.` as input.
+Navigate to the platform specific DSL Docker folder again. For Jetson
+```bash
+cd deepstream-services-library-docker/jetson
+```
+or for dGPU
+```bash
+cd deepstream-services-library-docker/dgpu
+```
+and build the Docker image with the following command. Make sure to add the current directory `.` as input.
 ```bash
 docker build -t dsl:0 . 
 ```
