@@ -7,7 +7,7 @@ This repo contains Jetson and dGPU Dockerfiles and utility scripts for the [Deep
 
 Important notes:
 * Base images (Note: you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image).
-  * Jetson - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
+  * Jetson - [`nvcr.io/nvidia/deepstream-l4t:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
   * dGPU - [`nvcr.io/nvidia/deepstream:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id1)
   
 * The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in a future release.
