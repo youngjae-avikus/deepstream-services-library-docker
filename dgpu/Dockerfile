@@ -42,7 +42,7 @@ RUN python3 -m pip install --upgrade pip
 RUN mkdir ${ROOT_NAME}
 WORKDIR ${ROOT_NAME}
 
-RUN git clone https://github.com/youngjae-avikus/deepstream-services-library.git
+RUN git clone https://github.com/prominenceai/deepstream-services-library.git
 WORKDIR ${ROOT_NAME}/deepstream-services-library
 
 RUN if [ "$DSL_BRANCH" != "master" ] ; then git checkout ${DSL_BRANCH} ; fi
