@@ -13,10 +13,8 @@ WORKDIR /tmp
 
 # public gpg key error issue
 # https://github.com/NVIDIA/nvidia-docker/issues/1631#issuecomment-1112682423
-RUN rm /etc/apt/sources.list.d/cuda.list
 RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-key del 7fa2af80
-RUN apt-get update && apt-get install -y --no-install-recommends wget
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
 RUN dpkg -i cuda-keyring_1.0-1_all.deb
 
