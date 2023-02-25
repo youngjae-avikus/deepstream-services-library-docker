@@ -23,9 +23,9 @@ Important notes:
 
 ## Contents
 * [Install Docker and Docker Compose](#install-docker-and-docker-compose)
-* [Set the default Docker runtime](set_the_default_docker_runtime)
-* [Add current user to docker group](add_current_user_to_docker_group)
-* [Re-login or reboot](re-login-or-reboot)
+* [Set the default Docker runtime](#set-the-default-docker-runtime)
+* [Add current user to docker group](#add-current-user-to-docker-group)
+* [Re-login or reboot](#re-login-or-reboot)
 * [Create a local Docker Registry](#create-a-local-docker-registry)
 * [Build the Docker Image](#build-the-docker-image)
 * [Build and run the Docker container](#build-and-run-the-docker-container)
@@ -34,7 +34,7 @@ Important notes:
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
 * [Complete Triton Setup](#complete-triton-setup-optional)
 * [Commit your file changes](#commit-your-file-changes)
-* [Deploy the image to the local Docker registry](deploy_the_image_to_the_local_docker_registry)
+* [Deploy the image to the local Docker registry](#deploy-the-image-to-the-local-docker-registry)
 * [Troubleshooting](#troubleshooting)
 
 ---
