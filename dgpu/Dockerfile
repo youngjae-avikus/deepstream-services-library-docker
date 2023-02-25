@@ -36,7 +36,9 @@ RUN	update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
 
 RUN python -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade pip 
- 
+
+RUN apt-get install -y libavformat-dev libavcodec-dev libavutil-dev libswscale-dev
+
 RUN mkdir ${ROOT_NAME}
 WORKDIR ${ROOT_NAME}
 

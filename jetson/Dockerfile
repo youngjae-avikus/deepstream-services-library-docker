@@ -47,13 +47,11 @@ RUN apt-get install -y curl
 RUN apt-get install -y python3-pip
 RUN apt-get install -y python-pip
 RUN pip3 install --upgrade pip 
-RUN apt-get install -y python3-opencv
 RUN pip3 install numpy==1.19.4
-RUN apt-get install -y  libapr1 libapr1-dev libaprutil1 libaprutil1-dev
+RUN apt-get install -y libapr1 libapr1-dev libaprutil1 libaprutil1-dev
+RUN apt-get install -y libavformat-dev libavcodec-dev libavutil-dev libswscale-dev
 RUN apt install -y libjson-glib-1.0-0
 RUN apt install -y libsoup-gnome2.4-dev
-RUN apt-get install -y libopencv-dev 
-RUN cp -r /usr/lib/aarch64-linux-gnu/pkgconfig/opencv.pc /usr/lib/aarch64-linux-gnu/pkgconfig/opencv4.pc
 
 RUN apt-get install -y apache2-dev
 RUN ldconfig
