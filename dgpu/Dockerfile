@@ -11,6 +11,9 @@ ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 
 WORKDIR /tmp
 
+# public gpg key error issue
+# https://github.com/NVIDIA/nvidia-docker/issues/1631#issuecomment-1112682423
+RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-key del 7fa2af80
 RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
 RUN dpkg -i cuda-keyring_1.0-1_all.deb
@@ -33,11 +36,13 @@ RUN	update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 2
 
 RUN python -m pip install --upgrade pip
 RUN python3 -m pip install --upgrade pip 
- 
+
+RUN apt-get install -y libavformat-dev libavcodec-dev libavutil-dev libswscale-dev
+
 RUN mkdir ${ROOT_NAME}
 WORKDIR ${ROOT_NAME}
 
-RUN git clone https://github.com/youngjae-avikus/deepstream-services-library.git
+RUN git clone https://github.com/prominenceai/deepstream-services-library.git
 WORKDIR ${ROOT_NAME}/deepstream-services-library
 
 RUN if [ "$DSL_BRANCH" != "master" ] ; then git checkout ${DSL_BRANCH} ; fi

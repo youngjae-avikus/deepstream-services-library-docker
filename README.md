@@ -3,12 +3,14 @@
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://discord.com/channels/750454524849684540/750457019260993636)
 
 # deepstream-services-library-docker
-This repo contains a Dockerfile and utility scripts for the [Deepstream Services Library](https://github.com/prominenceai/deepstream-services-library) (DSL). 
+This repo contains Jetson and dGPU Dockerfiles and utility scripts for the [Deepstream Services Library](https://github.com/prominenceai/deepstream-services-library) (DSL). 
 
 Important notes:
-* Jetson only - dGPU files are still to be developed.
-* Base image - [`nvcr.io/nvidia/deepstream-l4t:6.0-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2) - you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image.
-* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in the next release.
+* Base images (Note: you can update the `ARG BASE_IMAGE` value in the `Dockerfile` to pull a different image).
+  * Jetson - [`nvcr.io/nvidia/deepstream-l4t:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id2)
+  * dGPU - [`nvcr.io/nvidia/deepstream:6.0.1-triton`](https://docs.nvidia.com/metropolis/deepstream/dev-guide/text/DS_docker_containers.html#id1)
+  
+* The [`deepstream-services-library`]((https://github.com/prominenceai/deepstream-services-library)) repo is cloned into `/opt/prominenceai/` collocated with `/opt/nvidia/`. **Note:** this is a temporary step. The `libdsl.so` can/will be pulled from GitHub directly in a future release.
 * Additional build steps -- in interactive mode -- are required to build the `libdsl.so` once the container is running.
 * **CAUTION: this repo is in the early stages of development -- please report issues!**
 
@@ -17,13 +19,13 @@ Important notes:
 * `docker_run.sh` - builds and runs the container in interactive mode - removes the container on exit.
 * `Dockerfile` - Docker file used by the [Docker build command](#build-the-docker-image)
 
-*... and many thanks to [@gigwegbe](https://github.com/gigwegbe) for creating the above files!*
+*... and many thanks to [@gigwegbe](https://github.com/gigwegbe) and [@youngjae-avikus](https://github.com/youngjae-avikus) for their contributions!*
 
 ## Contents
 * [Install Docker and Docker Compose](#install-docker-and-docker-compose)
-* [Set the default Docker runtime](set_the_default_docker_runtime)
-* [Add current user to docker group](add_current_user_to_docker_group)
-* [Re-login or reboot](re-login-or-reboot)
+* [Set the default Docker runtime](#set-the-default-docker-runtime)
+* [Add current user to docker group](#add-current-user-to-docker-group)
+* [Re-login or reboot](#re-login-or-reboot)
 * [Create a local Docker Registry](#create-a-local-docker-registry)
 * [Build the Docker Image](#build-the-docker-image)
 * [Build and run the Docker container](#build-and-run-the-docker-container)
@@ -32,7 +34,7 @@ Important notes:
 * [Generate caffemodel engine files](#generate-caffemodel-engine-files-optional)
 * [Complete Triton Setup](#complete-triton-setup-optional)
 * [Commit your file changes](#commit-your-file-changes)
-* [Deploy the image to the local Docker registry](deploy_the_image_to_the_local_docker_registry)
+* [Deploy the image to the local Docker registry](#deploy-the-image-to-the-local-docker-registry)
 * [Troubleshooting](#troubleshooting)
 
 ---
@@ -40,11 +42,21 @@ Important notes:
 ## Install Docker and Docker Compose
 ***Important note: NVIDIA requires a specific release of Docker.  See the [Troubleshooting](#troubleshooting) section if docker commands fail after updating your system with Software Updater.***
 
-First, clone the repo and make all scripts executable.
+First, clone the DSL Docker GitHub repository.
 ```bash
-git clone https://github.com/prominenceai/deepstream-services-library-docker ; \
-    cd ./deepstream-services-library-docker ; \
-    chmod +x *.sh
+git clone https://github.com/prominenceai/deepstream-services-library-docker
+```
+Navigate to the platform specific folder. For Jetson
+```bash
+cd deepstream-services-library-docker/jetson
+```
+or for dGPU
+```bash
+cd deepstream-services-library-docker/dgpu
+```
+Then make all sripts writable
+```bash
+chmod +x *.sh
 ```
 Ensure you have `curl` installed by entering the following
 ```bash
@@ -66,7 +78,7 @@ Set the NVIDIA runtime as a default runtime in Docker. Update your `/etc/docker/
     "default-runtime": "nvidia",
     "runtimes": {
         "nvidia": {
-        "path": "nvidia-container-runtime",
+            "path": "nvidia-container-runtime",
             "runtimeArgs": []
         }
     }
@@ -88,7 +100,15 @@ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 
 ## Build the Docker Image
-Navigagte to the `deepstream-services-library-docker` folder and build the Docker image with the following command. Make sure to add the current directory `.` as input.
+Navigate to the platform specific DSL Docker folder again. For Jetson
+```bash
+cd deepstream-services-library-docker/jetson
+```
+or for dGPU
+```bash
+cd deepstream-services-library-docker/dgpu
+```
+and build the Docker image with the following command. Make sure to add the current directory `.` as input.
 ```bash
 docker build -t dsl:0 . 
 ```
@@ -113,7 +133,7 @@ The Docker run script sets up the environment and runs the container with the be
 1. `docker run` Docker run command to build and run the `dsl:0` image in a container.
 2. `-it` - run the container in interactive mode.
 3. `--rm` - remove the container on exit.
-4. `--net=host` - when a container is created, the container does not have an independent network(docker0) area and uses the host and the network together.
+4. `--net=host` - when a container is created, the container does not have an independent network (docker0) area and uses the host and the network together.
 5. `--runtime nvidia` - redundant if set in `/etc/docker/daemon.json`.
 6. `-e DISPLAY=$DISPLAY` - sets the display environment variable for the container.
 7. `-v /tmp/argus_socket:/tmp/argus_socket` - argus tmp folder mapped into container.
@@ -138,7 +158,7 @@ cd /opt/prominenceai/deepstream-services-library ; \
 **Note:** the library will be copied to `/usr/local/lib` once built.
 
 ## Install `pyds` module
-To test the **custom_pph** python example(1uri_file_pgie_iou_tiler_osd_custom_pph_window.py), the `pyds` module must be installed in advance. Installation is available at the link [deepstream_python_apps](https://github.com/NVIDIA-AI-IOT/deepstream_python_apps). You can download and install whl from the [release page](https://github.com/NVIDIA-AI-IOT/deepstream_python_apps/releases)
+To test the **custom_pph** python example (1uri_file_pgie_iou_tiler_osd_custom_pph_window.py), the `pyds` module must be installed in advance. Installation is available at the link [deepstream_python_apps](https://github.com/NVIDIA-AI-IOT/deepstream_python_apps). You can download and install whl from the [release page](https://github.com/NVIDIA-AI-IOT/deepstream_python_apps/releases)
 
 For example, if environment is Nvidia Jetson, Ubuntu 18.04, Python 3.6, DeepStream SDK 6.0.1
 
